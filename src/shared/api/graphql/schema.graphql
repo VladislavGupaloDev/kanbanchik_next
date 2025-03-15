@@ -1,0 +1,149 @@
+# This file was generated. Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+"Indicates exactly one field must be supplied and this field must not be `null`."
+directive @oneOf on INPUT_OBJECT
+
+type DeviceModel {
+    browser: String
+    os: String
+    type: String
+}
+
+type LocationModel {
+    city: String
+    country: String
+    country_code: String
+    latitude: Float
+    longitude: Float
+    timezone: String
+}
+
+type Mutation {
+    clearSession: Boolean!
+    createUser(data: CreateUserInput!): UserModel!
+    deactivateAccount(data: DeactivateAccountInput!): UserModel!
+    disableTotp: Boolean!
+    enableTotp(data: EnableTotpInput!): Boolean!
+    loginUser(data: LoginInput!): UserModel!
+    newPassword(data: NewPasswordInput!): Boolean!
+    removeSession(id: String!): Boolean!
+    resetPassword(data: ResetPasswordInput!): Boolean!
+    updateProfile(input: UpdateProfileInput!): ProfileModel!
+    updateUserInfo(input: UpdateUserInfoInput!): UserModel!
+    verifyAccount(data: VerificationInput!): Boolean!
+}
+
+type ProfileModel {
+    birthday: DateTime
+    company: String
+    fullName: String
+    location: String
+    private: Boolean
+    publicEmail: String
+    userId: String!
+}
+
+type Query {
+    findCurrentUserSession: SessionModel!
+    findProfile(data: FindProfileInput!): ProfileModel!
+    findSessionByUser: [SessionModel!]!
+    findUser: UserModel!
+    generateTotpSecret: TotpModel!
+    logoutUser: Boolean!
+}
+
+type SessionMetadataModel {
+    device: DeviceModel!
+    ip: String!
+    location: LocationModel!
+}
+
+type SessionModel {
+    createdAt: String!
+    metadata: SessionMetadataModel!
+    sessionId: ID!
+    userId: String!
+}
+
+type TotpModel {
+    qrcodeUrl: String!
+    secret: String!
+}
+
+type UserModel {
+    createdAt: DateTime!
+    deactivatedAt: DateTime
+    email: String!
+    id: ID!
+    isEmailVerified: Boolean!
+    isTotpEnabled: Boolean!
+    profile: ProfileModel
+    updatedAt: DateTime!
+    username: String!
+}
+
+"A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format."
+scalar DateTime
+
+input CreateUserInput {
+    email: String!
+    password: String!
+    username: String!
+}
+
+input DeactivateAccountInput {
+    email: String!
+    password: String!
+    token: String
+}
+
+input EnableTotpInput {
+    secret: String!
+    totpToken: String!
+}
+
+input FindProfileInput {
+    id: String
+    userId: String
+    username: String
+}
+
+input LoginInput {
+    login: String!
+    password: String!
+    totpToken: String
+}
+
+input NewPasswordInput {
+    password: String!
+    passwordRepeat: String!
+    token: String!
+}
+
+input ResetPasswordInput {
+    email: String!
+}
+
+input UpdateProfileInput {
+    birthday: DateTime
+    company: String
+    fullName: String
+    location: String
+    private: Boolean
+    publicEmail: String
+}
+
+input UpdateUserInfoInput {
+    email: String
+    password: String
+    username: String
+}
+
+input VerificationInput {
+    token: String!
+}
