@@ -1,6 +1,0 @@
-schema: ./path/to/schema.graphql
-extensions:
-  endpoints:
-    default:
-      url: http://your-server-url/graphql
-      skipSSLValidation: true

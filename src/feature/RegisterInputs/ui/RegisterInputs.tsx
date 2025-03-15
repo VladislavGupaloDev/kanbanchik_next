@@ -6,7 +6,7 @@ import { RegisterSchema } from '@/widget/RegisterForm/schema'
 import { ComponentProps } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-export function LoginInputs(props: ComponentProps<'div'>) {
+export function RegisterInputs(props: ComponentProps<'div'>) {
   const { register } = useFormContext<RegisterSchema>()
   return (
     <div

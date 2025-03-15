@@ -1,1 +1,1 @@
-export {RegisterInputs} from './ui/RegisterInputs'
+export { LoginInputs } from './ui/LoginInputs'

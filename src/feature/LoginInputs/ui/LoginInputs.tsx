@@ -1,46 +1,42 @@
+import { FieldErrorProvider } from '@/entity/AuthField'
 import { Label } from '@/shared/components/ui/label'
 import { cn } from '@/shared/lib/utils'
 import { FormField } from '@/shared/ui/form/FormField'
 import { PasswordField } from '@/shared/ui/form/FormPasswordField'
-import { RegisterSchema } from '@/widget/RegisterForm/schema'
+import { LoginSchema } from '@/widget/LoginForm/schema'
 import { ComponentProps } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-export function RegisterInputs(props: ComponentProps<'div'>) {
-  const { register } = useFormContext<RegisterSchema>()
+export function LoginInputs(props: ComponentProps<'div'>) {
+  const {
+    register,
+    formState: { errors }
+  } = useFormContext<LoginSchema>()
   return (
     <div
       className={cn('flex flex-col gap-3')}
       {...props}
     >
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'username'}>Username</Label>
+      <Label htmlFor={'login'}>Login</Label>
+      <FieldErrorProvider
+        errorMsg={errors.login?.message}
+        defaultMessage={
+          'Данное имя пользователя будет использовано как идентификатор пользователя в публичном доступе'
+        }
+      >
         <FormField
-          id={'username'}
-          {...register('username')}
+          id={'login'}
+          className={cn(errors.login && 'border-red-400')}
+          {...register('login')}
         />
-      </div>
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'email'}>Email</Label>
-        <FormField
-          id={'email'}
-          {...register('email')}
-        />
-      </div>
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'password'}>Password</Label>
+      </FieldErrorProvider>
+      <Label htmlFor={'password'}>Password</Label>
+      <FieldErrorProvider errorMsg={errors.password?.message}>
         <PasswordField
           id={'password'}
           {...register('password')}
         />
-      </div>
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'confirm-password'}>Confirm password</Label>
-        <PasswordField
-          id={'confirm-password'}
-          {...register('confirmPassword')}
-        />
-      </div>
+      </FieldErrorProvider>
     </div>
   )
 }

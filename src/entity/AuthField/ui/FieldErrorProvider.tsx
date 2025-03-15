@@ -2,23 +2,28 @@ import { cn } from '@/shared/lib/utils'
 import { ComponentProps } from 'react'
 
 interface AuthFieldProps extends ComponentProps<'div'> {
-  errors?: boolean
   errorMsg?: string
+  defaultMessage?: string
 }
 
-export function AuthField({
-  errors,
+export function FieldErrorProvider({
   errorMsg,
+  defaultMessage,
   className,
   children
 }: AuthFieldProps) {
   return (
-    <div className={cn('flex flex-col gap-2')}>
+    <div className={cn('', className)}>
       {children}
-      {errors.login?.message && (
-        <div className={'animate-in fade-in-0 overflow-hidden'}>
-          <p className={'text-xs text-red-400'}>{errors.login.message}</p>
-        </div>
+      {(errorMsg || defaultMessage) && (
+        <p
+          className={cn(
+            'animate-in fade-in-0 text-primary mt-2 h-fit overflow-hidden text-xs',
+            errorMsg && 'text-red-400'
+          )}
+        >
+          {errorMsg ?? defaultMessage}
+        </p>
       )}
     </div>
   )

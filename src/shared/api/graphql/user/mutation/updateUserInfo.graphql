@@ -1,0 +1,6 @@
+mutation UdateUserInfo($data: UpdateUserInfoInput!) {
+  updateUserInfo(input: $data) {
+    username
+    id
+  }
+}
