@@ -1,22 +1,41 @@
-query FindCurrentUserSession {
-  findCurrentUserSession {
-    sessionId
-    createdAt
-    metadata {
-      location {
-        country_code
-        country
-        city
-        timezone
-        latitude
-        longitude
+query FindCurrentSession {
+  findCurrentSession {
+    __typename
+    ... on FindSessionSuccess {
+      session {
+        __typename
+        sessionId
+        userId
+        createdAt
+        metadata {
+          __typename
+          ip
+          location {
+            __typename
+            city
+            country
+            country_code
+            timezone
+            latitude
+            longitude
+          }
+          device {
+            __typename
+            type
+            browser
+          }
+        }
       }
-      device {
-        browser
-        os
-        type
-      }
-      ip
+    }
+    ... on FindSessionError {
+      __typename
+      error
+      error_code
+    }
+    ... on BaseError {
+      error
+      error_code
+      __typename
     }
   }
 }

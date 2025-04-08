@@ -1,0 +1,15 @@
+mutation RemoveSession($id: String!) {
+  removeSession(id: $id) {
+    ... on RemoveSessionSuccess {
+      __typename
+      status
+      session
+    }
+    ... on RemoveSessionError {
+      __typename
+      error
+      error_code
+      sessionId
+    }
+  }
+}

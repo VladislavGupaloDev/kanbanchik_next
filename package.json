@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.4",
+    "@floating-ui/react": "^0.27.5",
+    "@floating-ui/react-dom": "^2.1.2",
     "@graphql-codegen/typescript": "^4.1.5",
     "@graphql-codegen/typescript-operations": "^4.5.1",
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
@@ -21,6 +23,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "graphql": "^16.10.0",
+    "input-otp": "^1.4.2",
     "lucide-react": "^0.479.0",
     "next": "15.2.2",
     "react": "^19.0.0",

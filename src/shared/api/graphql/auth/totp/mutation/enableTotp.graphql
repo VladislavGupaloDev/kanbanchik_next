@@ -1,3 +1,13 @@
-mutation EnableTotp($data: EnableTotpInput!) {
-  enableTotp(data: $data)
+mutation EnableTotp($input: EnableTotpInput!) {
+  enableTotp(input: $input) {
+    ... on EnableTotpSuccess {
+      __typename
+      success
+    }
+    ... on EnableTotpError {
+      __typename
+      error
+      error_code
+    }
+  }
 }

@@ -1,0 +1,22 @@
+query FindProfileBySession {
+  findProfileBySession {
+    __typename
+    ... on FindProfileSuccess {
+      profile {
+        __typename
+        userId
+        fullName
+        private
+        publicEmail
+        company
+        location
+        birthday
+      }
+    }
+    ... on FindProfileError {
+      __typename
+      error
+      error_code
+    }
+  }
+}

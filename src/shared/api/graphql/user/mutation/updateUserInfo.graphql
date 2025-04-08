@@ -1,6 +1,20 @@
-mutation UdateUserInfo($data: UpdateUserInfoInput!) {
-  updateUserInfo(input: $data) {
-    username
-    id
+mutation UdateUserInfo($input: UpdateUserInfoInput!) {
+  updateUserInfo(input: $input) {
+    ... on UpdateUserSuccess {
+      user {
+        id
+        login
+        email
+        displayName
+        isEmailVerified
+        isTotpEnabled
+        __typename
+      }
+    }
+    ... on UpdateUserError {
+      error
+      error_code
+      __typename
+    }
   }
 }

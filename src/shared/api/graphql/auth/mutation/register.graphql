@@ -1,0 +1,22 @@
+mutation RegisterUser($input: RegisterUserInput!) {
+  createUser(input: $input) {
+    ... on RegisterSuccess {
+      __typename
+      user {
+        __typename
+        id
+        email
+        login
+        profile {
+          fullName
+        }
+      }
+    }
+    ... on RegisterError {
+      __typename
+      error
+      error_code
+      error_description
+    }
+  }
+}

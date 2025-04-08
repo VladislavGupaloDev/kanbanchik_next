@@ -1,0 +1,36 @@
+query FindSessionsByUserId($userId: String!) {
+  findSessionsByUserId(userId: $userId) {
+    ... on FindSessionsSuccess {
+      __typename
+      sessions {
+        __typename
+        sessionId
+        userId
+        createdAt
+        metadata {
+          ip
+          location {
+            city
+            country
+            country_code
+            timezone
+            latitude
+            longitude
+          }
+          device {
+            type
+            browser
+          }
+        }
+      }
+      limit
+      current_value
+    }
+
+    ... on FindSessionError {
+      __typename
+      error
+      error_code
+    }
+  }
+}

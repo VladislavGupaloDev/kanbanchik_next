@@ -1,8 +1,0 @@
-# TODO: Its must be AuthCheck or getMySessionUser
-query FindUser {
-  findUser {
-    id
-    email
-    username
-  }
-}

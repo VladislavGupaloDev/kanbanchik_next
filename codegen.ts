@@ -3,7 +3,7 @@ import 'dotenv/config'
 
 const config: CodegenConfig = {
   schema: process.env.NEXT_PUBLIC_SERVER_URL,
-  documents: ['./src/shared/api/graphql/**/*.graphql'],
+  documents: ['./src/**/*.graphql'],
   generates: {
     './src/shared/api/graphql/_generated_/output.ts': {
       plugins: [

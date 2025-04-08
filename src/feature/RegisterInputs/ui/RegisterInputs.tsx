@@ -1,46 +1,89 @@
+import { FieldErrorWrapper } from '@/entity/AuthField'
 import { Label } from '@/shared/components/ui/label'
-import { cn } from '@/shared/lib/utils'
+import { cn } from '@/shared/lib/utils/utils'
 import { FormField } from '@/shared/ui/form/FormField'
 import { PasswordField } from '@/shared/ui/form/FormPasswordField'
 import { RegisterSchema } from '@/widget/RegisterForm/schema'
 import { ComponentProps } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-export function RegisterInputs(props: ComponentProps<'div'>) {
-  const { register } = useFormContext<RegisterSchema>()
+interface RegisterInputs extends ComponentProps<'div'> {
+  disabled?: boolean
+}
+
+export function RegisterInputs({
+  disabled = false,
+  className,
+  ...props
+}: RegisterInputs) {
+  const {
+    register,
+    formState: {
+      errors: {
+        username: usernameError,
+        email: emailError,
+        password: passwordError,
+        confirmPassword: confirmPasswordError
+      }
+    }
+  } = useFormContext<RegisterSchema>()
+
   return (
     <div
-      className={cn('flex flex-col gap-3')}
+      className={cn('flex flex-col gap-3', className)}
       {...props}
     >
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'username'}>Username</Label>
+      <Label htmlFor={'login'}>Имя пользователя</Label>
+      <FieldErrorWrapper
+        errorMsg={usernameError?.message}
+        hint={
+          'Данное имя пользователя будет использовано как идентификатор пользователя в публичном доступе'
+        }
+      >
         <FormField
-          id={'username'}
-          {...register('username')}
+          id={'login'}
+          placeholder='Имя пользователя'
+          error={!!usernameError}
+          disabled={disabled}
+          {...register('login')}
         />
-      </div>
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'email'}>Email</Label>
+      </FieldErrorWrapper>
+      <Label htmlFor={'email'}>Почта</Label>
+
+      <FieldErrorWrapper
+        errorMsg={emailError?.message}
+        hint={'Данная почта будет использоваться для верификации аккаунта '}
+      >
         <FormField
           id={'email'}
+          placeholder='Почта'
+          type='email'
+          error={!!emailError}
+          disabled={disabled}
           {...register('email')}
         />
-      </div>
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'password'}>Password</Label>
+      </FieldErrorWrapper>
+      <Label htmlFor={'password'}>Пароль</Label>
+
+      <FieldErrorWrapper errorMsg={passwordError?.message}>
         <PasswordField
           id={'password'}
+          placeholder='••••••••'
+          error={!!passwordError}
+          disabled={disabled}
           {...register('password')}
         />
-      </div>
-      <div className={cn('flex flex-col gap-2')}>
-        <Label htmlFor={'confirm-password'}>Confirm password</Label>
+      </FieldErrorWrapper>
+      <Label htmlFor={'confirmPassword'}>Подтверждение пароля</Label>
+      <FieldErrorWrapper errorMsg={confirmPasswordError?.message}>
         <PasswordField
-          id={'confirm-password'}
+          id={'confirmPassword'}
+          placeholder='••••••••'
+          error={!!confirmPasswordError}
+          disabled={disabled}
           {...register('confirmPassword')}
         />
-      </div>
+      </FieldErrorWrapper>
     </div>
   )
 }

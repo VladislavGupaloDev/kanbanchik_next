@@ -1,0 +1,14 @@
+mutation EmailVerify($input: VerificationInput!) {
+  emailVerify(input: $input) {
+    __typename
+    ... on EmailVerifySuccess {
+      __typename
+      status
+    }
+    ... on EmailVerifyError {
+      __typename
+      error
+      error_code
+    }
+  }
+}

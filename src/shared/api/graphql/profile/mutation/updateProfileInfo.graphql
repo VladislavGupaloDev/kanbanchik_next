@@ -1,0 +1,20 @@
+mutation UpdateProfileInfo($input: UpdateProfileInput!) {
+  updateProfile(input: $input) {
+    __typename
+    ... on UpdateProfileSuccess {
+      profile {
+        __typename
+        fullName
+        private
+        company
+        location
+        birthday
+      }
+    }
+    ... on UpdateProfileError {
+      __typename
+      error
+      error_code
+    }
+  }
+}

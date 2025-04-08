@@ -38,7 +38,7 @@ export default function RootLayout({
         <Button asChild>
           <Link
             href={ROUTES.PUBLIC.HOME}
-            className={'absolute block'}
+            className={'absolute right-0 z-99 block'}
           >
             Home
           </Link>

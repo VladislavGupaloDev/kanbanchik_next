@@ -1,0 +1,21 @@
+# TODO: Its must be AuthCheck or getMySessionUser
+query FindCurrentUser {
+  findUserByCurrentSession {
+    ... on FindUserSuccess {
+      user {
+        id
+        login
+        email
+        displayName
+        isEmailVerified
+        isTotpEnabled
+        __typename
+      }
+    }
+    ... on FindUserError {
+      error
+      error_code
+      __typename
+    }
+  }
+}

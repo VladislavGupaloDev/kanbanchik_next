@@ -1,3 +1,13 @@
 mutation DisableTotp {
-  disableTotp
+  disableTotp {
+    ... on DisableTotpSuccess {
+      __typename
+      success
+    }
+    ... on DisableTotpError {
+      __typename
+      error
+      error_code
+    }
+  }
 }

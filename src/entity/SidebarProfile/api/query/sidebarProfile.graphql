@@ -1,0 +1,17 @@
+query SidebarProfileUser {
+  findUserByCurrentSession {
+    ... on FindUserSuccess {
+      user {
+        login
+        displayName
+        email
+        __typename
+      }
+    }
+    ... on FindUserError {
+      error
+      error_code
+      __typename
+    }
+  }
+}

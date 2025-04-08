@@ -18,16 +18,48 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
-export type CreateUserInput = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-  username: Scalars['String']['input'];
+export type AdditionalAuthError = BaseError & {
+  __typename?: 'AdditionalAuthError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+  error_description?: Maybe<Scalars['String']['output']>;
+  obscured_email?: Maybe<Scalars['String']['output']>;
+};
+
+export type BanInfo = {
+  __typename?: 'BanInfo';
+  date: Scalars['DateTime']['output'];
+  permanent: Scalars['Boolean']['output'];
+  user: User;
+};
+
+export type BaseError = {
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
+export type CredentialsError = BaseError & {
+  __typename?: 'CredentialsError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
 };
 
 export type DeactivateAccountInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
   token?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DeactivateUserError = BaseError & {
+  __typename?: 'DeactivateUserError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+  error_description?: Maybe<Scalars['String']['output']>;
+};
+
+export type DeactivateUserSuccess = {
+  __typename?: 'DeactivateUserSuccess';
+  success: Scalars['Boolean']['output'];
 };
 
 export type DeviceModel = {
@@ -37,15 +69,102 @@ export type DeviceModel = {
   type?: Maybe<Scalars['String']['output']>;
 };
 
+export type DisableTotpError = BaseError & {
+  __typename?: 'DisableTotpError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
+export type DisableTotpSuccess = {
+  __typename?: 'DisableTotpSuccess';
+  success: Scalars['Boolean']['output'];
+};
+
+export type EmailVerifyError = BaseError & {
+  __typename?: 'EmailVerifyError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
+export type EmailVerifySuccess = {
+  __typename?: 'EmailVerifySuccess';
+  status: Scalars['Boolean']['output'];
+};
+
+export type EnableTotpError = BaseError & {
+  __typename?: 'EnableTotpError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
 export type EnableTotpInput = {
   secret: Scalars['String']['input'];
   totpToken: Scalars['String']['input'];
 };
 
+export type EnableTotpSuccess = {
+  __typename?: 'EnableTotpSuccess';
+  success: Scalars['Boolean']['output'];
+};
+
+export type FindProfileError = BaseError & {
+  __typename?: 'FindProfileError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
 export type FindProfileInput = {
   id?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
+  login?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type FindProfileSuccess = {
+  __typename?: 'FindProfileSuccess';
+  profile?: Maybe<Profile>;
+};
+
+export type FindSessionError = BaseError & {
+  __typename?: 'FindSessionError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+  error_description: Scalars['String']['output'];
+};
+
+export type FindSessionSuccess = {
+  __typename?: 'FindSessionSuccess';
+  session?: Maybe<SessionModel>;
+};
+
+export type FindSessionsSuccess = {
+  __typename?: 'FindSessionsSuccess';
+  current_value: Scalars['Float']['output'];
+  limit: Scalars['Float']['output'];
+  sessions?: Maybe<Array<SessionModel>>;
+};
+
+export type FindUserError = BaseError & {
+  __typename?: 'FindUserError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
+export type FindUserResultUnion = FindUserError | FindUserSuccess | UserBanned;
+
+export type FindUserSuccess = {
+  __typename?: 'FindUserSuccess';
+  user?: Maybe<User>;
+};
+
+export type GenerateTotpError = BaseError & {
+  __typename?: 'GenerateTotpError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
+export type GenerateTotpSuccess = {
+  __typename?: 'GenerateTotpSuccess';
+  qrcodeUrl: Scalars['String']['output'];
+  secret: Scalars['String']['output'];
 };
 
 export type LocationModel = {
@@ -64,45 +183,58 @@ export type LoginInput = {
   totpToken?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type LoginResponseUnion = AdditionalAuthError | CredentialsError | LoginSuccess;
+
+export type LoginSuccess = {
+  __typename?: 'LoginSuccess';
+  user: User;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   clearSession: Scalars['Boolean']['output'];
-  createUser: UserModel;
-  deactivateAccount: UserModel;
-  disableTotp: Scalars['Boolean']['output'];
-  enableTotp: Scalars['Boolean']['output'];
-  loginUser: UserModel;
-  newPassword: Scalars['Boolean']['output'];
-  removeSession: Scalars['Boolean']['output'];
-  resetPassword: Scalars['Boolean']['output'];
-  updateProfile: ProfileModel;
-  updateUserInfo: UserModel;
-  verifyAccount: Scalars['Boolean']['output'];
+  createUser: RegisterResponseUnion;
+  deactivateAccount: DeactivateAccountUnion;
+  disableTotp: DisableTotpUnion;
+  emailVerify: EmailVerifyUnion;
+  enableTotp: EnableTotpUnion;
+  loginUser: LoginResponseUnion;
+  logoutUser: Scalars['Boolean']['output'];
+  newPassword: NewPasswordUnion;
+  removeSession: RemoveSessionUnion;
+  resetPassword: ResetPasswordUnion;
+  updateProfile: UpdateProfileUnion;
+  updateUserInfo: UpdateUserResponseUnion;
 };
 
 
 export type MutationCreateUserArgs = {
-  data: CreateUserInput;
+  input: RegisterUserInput;
 };
 
 
 export type MutationDeactivateAccountArgs = {
-  data: DeactivateAccountInput;
+  input: DeactivateAccountInput;
+};
+
+
+export type MutationEmailVerifyArgs = {
+  input: VerificationInput;
 };
 
 
 export type MutationEnableTotpArgs = {
-  data: EnableTotpInput;
+  input: EnableTotpInput;
 };
 
 
 export type MutationLoginUserArgs = {
-  data: LoginInput;
+  input: LoginInput;
 };
 
 
 export type MutationNewPasswordArgs = {
-  data: NewPasswordInput;
+  input: NewPasswordInput;
 };
 
 
@@ -112,7 +244,7 @@ export type MutationRemoveSessionArgs = {
 
 
 export type MutationResetPasswordArgs = {
-  data: ResetPasswordInput;
+  input: ResetPasswordInput;
 };
 
 
@@ -125,9 +257,11 @@ export type MutationUpdateUserInfoArgs = {
   input: UpdateUserInfoInput;
 };
 
-
-export type MutationVerifyAccountArgs = {
-  data: VerificationInput;
+export type NewPasswordError = BaseError & {
+  __typename?: 'NewPasswordError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+  error_description?: Maybe<Scalars['String']['output']>;
 };
 
 export type NewPasswordInput = {
@@ -136,8 +270,13 @@ export type NewPasswordInput = {
   token: Scalars['String']['input'];
 };
 
-export type ProfileModel = {
-  __typename?: 'ProfileModel';
+export type NewPasswordSuccess = {
+  __typename?: 'NewPasswordSuccess';
+  success: Scalars['Boolean']['output'];
+};
+
+export type Profile = {
+  __typename?: 'Profile';
   birthday?: Maybe<Scalars['DateTime']['output']>;
   company?: Maybe<Scalars['String']['output']>;
   fullName?: Maybe<Scalars['String']['output']>;
@@ -149,21 +288,83 @@ export type ProfileModel = {
 
 export type Query = {
   __typename?: 'Query';
-  findCurrentUserSession: SessionModel;
-  findProfile: ProfileModel;
-  findSessionByUser: Array<SessionModel>;
-  findUser: UserModel;
-  generateTotpSecret: TotpModel;
-  logoutUser: Scalars['Boolean']['output'];
+  findCurrentSession: FindSessionUnion;
+  findProfile: FindProfileUnion;
+  findProfileBySession: FindProfileUnion;
+  findSessionsByCurrentUser: FindSessionUnion;
+  findSessionsByUserId: FindSessionUnion;
+  findUserByCurrentSession: FindUserResultUnion;
+  findUserByIdOrUsername: FindUserResultUnion;
+  generateTotpSecret: GenerateTotpUnion;
+  isUsernameAvailable: Scalars['Boolean']['output'];
+  sessionCheck: Scalars['Boolean']['output'];
 };
 
 
 export type QueryFindProfileArgs = {
-  data: FindProfileInput;
+  input: FindProfileInput;
+};
+
+
+export type QueryFindSessionsByUserIdArgs = {
+  userId: Scalars['String']['input'];
+};
+
+
+export type QueryFindUserByIdOrUsernameArgs = {
+  input: GetUserByIdOrUsername;
+};
+
+
+export type QueryIsUsernameAvailableArgs = {
+  input: UsernameAvailableInput;
+};
+
+export type RegisterError = BaseError & {
+  __typename?: 'RegisterError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+  error_description?: Maybe<Scalars['String']['output']>;
+};
+
+export type RegisterSuccess = {
+  __typename?: 'RegisterSuccess';
+  user: User;
+};
+
+export type RegisterUserInput = {
+  email: Scalars['String']['input'];
+  login: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+};
+
+export type RemoveSessionError = BaseError & {
+  __typename?: 'RemoveSessionError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+  sessionId: Scalars['String']['output'];
+};
+
+export type RemoveSessionSuccess = {
+  __typename?: 'RemoveSessionSuccess';
+  session: Scalars['String']['output'];
+  status: Scalars['Boolean']['output'];
+};
+
+export type ResetPasswordError = BaseError & {
+  __typename?: 'ResetPasswordError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+  error_description?: Maybe<Scalars['String']['output']>;
 };
 
 export type ResetPasswordInput = {
   email: Scalars['String']['input'];
+};
+
+export type ResetPasswordSuccess = {
+  __typename?: 'ResetPasswordSuccess';
+  success: Scalars['Boolean']['output'];
 };
 
 export type SessionMetadataModel = {
@@ -181,10 +382,10 @@ export type SessionModel = {
   userId: Scalars['String']['output'];
 };
 
-export type TotpModel = {
-  __typename?: 'TotpModel';
-  qrcodeUrl: Scalars['String']['output'];
-  secret: Scalars['String']['output'];
+export type UpdateProfileError = BaseError & {
+  __typename?: 'UpdateProfileError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
 };
 
 export type UpdateProfileInput = {
@@ -196,107 +397,286 @@ export type UpdateProfileInput = {
   publicEmail?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type UpdateUserInfoInput = {
-  email?: InputMaybe<Scalars['String']['input']>;
-  password?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
+export type UpdateProfileSuccess = {
+  __typename?: 'UpdateProfileSuccess';
+  profile?: Maybe<Profile>;
 };
 
-export type UserModel = {
-  __typename?: 'UserModel';
+export type UpdateUserError = BaseError & {
+  __typename?: 'UpdateUserError';
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
+export type UpdateUserInfoInput = {
+  displayName?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  login?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateUserSuccess = {
+  __typename?: 'UpdateUserSuccess';
+  user?: Maybe<User>;
+};
+
+export type User = {
+  __typename?: 'User';
   createdAt: Scalars['DateTime']['output'];
   deactivatedAt?: Maybe<Scalars['DateTime']['output']>;
+  displayName: Scalars['String']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   isEmailVerified: Scalars['Boolean']['output'];
   isTotpEnabled: Scalars['Boolean']['output'];
-  profile?: Maybe<ProfileModel>;
+  login: Scalars['String']['output'];
+  profile?: Maybe<Profile>;
   updatedAt: Scalars['DateTime']['output'];
-  username: Scalars['String']['output'];
+};
+
+export type UserBanned = BaseError & {
+  __typename?: 'UserBanned';
+  ban_info: BanInfo;
+  error: Scalars['String']['output'];
+  error_code: Scalars['Float']['output'];
+};
+
+export type UsernameAvailableInput = {
+  login: Scalars['String']['input'];
 };
 
 export type VerificationInput = {
   token: Scalars['String']['input'];
 };
 
+export type DeactivateAccountUnion = DeactivateUserError | DeactivateUserSuccess;
+
+export type DisableTotpUnion = DisableTotpError | DisableTotpSuccess;
+
+export type EmailVerifyUnion = EmailVerifyError | EmailVerifySuccess;
+
+export type EnableTotpUnion = EnableTotpError | EnableTotpSuccess;
+
+export type FindProfileUnion = FindProfileError | FindProfileSuccess;
+
+export type FindSessionUnion = FindSessionError | FindSessionSuccess | FindSessionsSuccess;
+
+export type GenerateTotpUnion = GenerateTotpError | GenerateTotpSuccess;
+
+export type GetUserByIdOrUsername = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  login?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type NewPasswordUnion = NewPasswordError | NewPasswordSuccess;
+
+export type RegisterResponseUnion = RegisterError | RegisterSuccess;
+
+export type RemoveSessionUnion = RemoveSessionError | RemoveSessionSuccess;
+
+export type ResetPasswordUnion = ResetPasswordError | ResetPasswordSuccess;
+
+export type UpdateProfileUnion = UpdateProfileError | UpdateProfileSuccess;
+
+export type UpdateUserResponseUnion = UpdateUserError | UpdateUserSuccess;
+
+export type SidebarProfileUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SidebarProfileUserQuery = { __typename?: 'Query', findUserByCurrentSession: { __typename: 'FindUserError', error: string, error_code: number } | { __typename?: 'FindUserSuccess', user?: { __typename: 'User', login: string, displayName: string, email: string } | null } | { __typename?: 'UserBanned' } };
+
 export type LoginMutationVariables = Exact<{
-  data: LoginInput;
+  input: LoginInput;
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', loginUser: { __typename?: 'UserModel', username: string, email: string } };
+export type LoginMutation = { __typename?: 'Mutation', loginUser: { __typename: 'AdditionalAuthError', error: string, error_code: number, obscured_email?: string | null, error_description?: string | null } | { __typename: 'CredentialsError', error: string, error_code: number } | { __typename: 'LoginSuccess', user: { __typename?: 'User', id: string, email: string, login: string } } };
 
-export type LogoutUserQueryVariables = Exact<{ [key: string]: never; }>;
+export type RegisterUserMutationVariables = Exact<{
+  input: RegisterUserInput;
+}>;
 
 
-export type LogoutUserQuery = { __typename?: 'Query', logoutUser: boolean };
+export type RegisterUserMutation = { __typename?: 'Mutation', createUser: { __typename: 'RegisterError', error: string, error_code: number, error_description?: string | null } | { __typename: 'RegisterSuccess', user: { __typename: 'User', id: string, email: string, login: string, profile?: { __typename?: 'Profile', fullName?: string | null } | null } } };
+
+export type SessionCheckQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SessionCheckQuery = { __typename?: 'Query', sessionCheck: boolean };
+
+export type IsUsernameAvailableQueryVariables = Exact<{
+  input: UsernameAvailableInput;
+}>;
+
+
+export type IsUsernameAvailableQuery = { __typename?: 'Query', isUsernameAvailable: boolean };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logoutUser: boolean };
 
 export type DisableTotpMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type DisableTotpMutation = { __typename?: 'Mutation', disableTotp: boolean };
+export type DisableTotpMutation = { __typename?: 'Mutation', disableTotp: { __typename: 'DisableTotpError', error: string, error_code: number } | { __typename: 'DisableTotpSuccess', success: boolean } };
 
 export type EnableTotpMutationVariables = Exact<{
-  data: EnableTotpInput;
+  input: EnableTotpInput;
 }>;
 
 
-export type EnableTotpMutation = { __typename?: 'Mutation', enableTotp: boolean };
+export type EnableTotpMutation = { __typename?: 'Mutation', enableTotp: { __typename: 'EnableTotpError', error: string, error_code: number } | { __typename: 'EnableTotpSuccess', success: boolean } };
 
 export type GenerateTotpSecretQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GenerateTotpSecretQuery = { __typename?: 'Query', generateTotpSecret: { __typename?: 'TotpModel', qrcodeUrl: string, secret: string } };
+export type GenerateTotpSecretQuery = { __typename?: 'Query', generateTotpSecret: { __typename: 'GenerateTotpError', error: string, error_code: number } | { __typename: 'GenerateTotpSuccess', qrcodeUrl: string, secret: string } };
+
+export type EmailVerifyMutationVariables = Exact<{
+  input: VerificationInput;
+}>;
+
+
+export type EmailVerifyMutation = { __typename?: 'Mutation', emailVerify: { __typename: 'EmailVerifyError', error: string, error_code: number } | { __typename: 'EmailVerifySuccess', status: boolean } };
 
 export type NewPasswordMutationVariables = Exact<{
-  data: NewPasswordInput;
+  input: NewPasswordInput;
 }>;
 
 
-export type NewPasswordMutation = { __typename?: 'Mutation', newPassword: boolean };
+export type NewPasswordMutation = { __typename?: 'Mutation', newPassword: { __typename: 'NewPasswordError', error: string, error_code: number, error_description?: string | null } | { __typename: 'NewPasswordSuccess', success: boolean } };
 
 export type ResetPasswordMutationVariables = Exact<{
-  data: ResetPasswordInput;
+  input: ResetPasswordInput;
 }>;
 
 
-export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
+export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'ResetPasswordError', error: string, error_code: number, error_description?: string | null } | { __typename?: 'ResetPasswordSuccess', success: boolean } };
 
-export type FindCurrentUserSessionQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FindCurrentUserSessionQuery = { __typename?: 'Query', findCurrentUserSession: { __typename?: 'SessionModel', sessionId: string, createdAt: string, metadata: { __typename?: 'SessionMetadataModel', ip: string, location: { __typename?: 'LocationModel', country_code?: string | null, country?: string | null, city?: string | null, timezone?: string | null, latitude?: number | null, longitude?: number | null }, device: { __typename?: 'DeviceModel', browser?: string | null, os?: string | null, type?: string | null } } } };
-
-export type FindSessionByUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FindSessionByUserQuery = { __typename?: 'Query', findSessionByUser: Array<{ __typename?: 'SessionModel', sessionId: string, createdAt: string, metadata: { __typename?: 'SessionMetadataModel', ip: string, location: { __typename?: 'LocationModel', country_code?: string | null, country?: string | null, city?: string | null, timezone?: string | null, latitude?: number | null, longitude?: number | null }, device: { __typename?: 'DeviceModel', browser?: string | null, os?: string | null, type?: string | null } } }> };
-
-export type CreateUserMutationVariables = Exact<{
-  data: CreateUserInput;
+export type UpdateProfileInfoMutationVariables = Exact<{
+  input: UpdateProfileInput;
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'UserModel', username: string, email: string } };
+export type UpdateProfileInfoMutation = { __typename?: 'Mutation', updateProfile: { __typename: 'UpdateProfileError', error: string, error_code: number } | { __typename: 'UpdateProfileSuccess', profile?: { __typename: 'Profile', fullName?: string | null, private?: boolean | null, company?: string | null, location?: string | null, birthday?: any | null } | null } };
+
+export type RemoveSessionMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type RemoveSessionMutation = { __typename?: 'Mutation', removeSession: { __typename: 'RemoveSessionError', error: string, error_code: number, sessionId: string } | { __typename: 'RemoveSessionSuccess', status: boolean, session: string } };
+
+export type FindCurrentSessionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindCurrentSessionQuery = { __typename?: 'Query', findCurrentSession: { __typename: 'FindSessionError', error: string, error_code: number } | { __typename: 'FindSessionSuccess', session?: { __typename: 'SessionModel', sessionId: string, userId: string, createdAt: string, metadata: { __typename: 'SessionMetadataModel', ip: string, location: { __typename: 'LocationModel', city?: string | null, country?: string | null, country_code?: string | null, timezone?: string | null, latitude?: number | null, longitude?: number | null }, device: { __typename: 'DeviceModel', type?: string | null, browser?: string | null } } } | null } | { __typename: 'FindSessionsSuccess' } };
+
+export type FindSessionsByCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindSessionsByCurrentUserQuery = { __typename?: 'Query', findSessionsByCurrentUser: { __typename: 'FindSessionError', error: string, error_code: number } | { __typename: 'FindSessionSuccess' } | { __typename: 'FindSessionsSuccess', limit: number, current_value: number, sessions?: Array<{ __typename: 'SessionModel', sessionId: string, userId: string, createdAt: string, metadata: { __typename: 'SessionMetadataModel', ip: string, location: { __typename: 'LocationModel', city?: string | null, country?: string | null, country_code?: string | null, timezone?: string | null, latitude?: number | null, longitude?: number | null }, device: { __typename: 'DeviceModel', type?: string | null, browser?: string | null } } }> | null } };
+
+export type FindSessionsByUserIdQueryVariables = Exact<{
+  userId: Scalars['String']['input'];
+}>;
+
+
+export type FindSessionsByUserIdQuery = { __typename?: 'Query', findSessionsByUserId: { __typename: 'FindSessionError', error: string, error_code: number } | { __typename?: 'FindSessionSuccess' } | { __typename: 'FindSessionsSuccess', limit: number, current_value: number, sessions?: Array<{ __typename: 'SessionModel', sessionId: string, userId: string, createdAt: string, metadata: { __typename?: 'SessionMetadataModel', ip: string, location: { __typename?: 'LocationModel', city?: string | null, country?: string | null, country_code?: string | null, timezone?: string | null, latitude?: number | null, longitude?: number | null }, device: { __typename?: 'DeviceModel', type?: string | null, browser?: string | null } } }> | null } };
 
 export type UdateUserInfoMutationVariables = Exact<{
-  data: UpdateUserInfoInput;
+  input: UpdateUserInfoInput;
 }>;
 
 
-export type UdateUserInfoMutation = { __typename?: 'Mutation', updateUserInfo: { __typename?: 'UserModel', username: string, id: string } };
+export type UdateUserInfoMutation = { __typename?: 'Mutation', updateUserInfo: { __typename: 'UpdateUserError', error: string, error_code: number } | { __typename?: 'UpdateUserSuccess', user?: { __typename: 'User', id: string, login: string, email: string, displayName: string, isEmailVerified: boolean, isTotpEnabled: boolean } | null } };
 
-export type FindUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FindUserQuery = { __typename?: 'Query', findUser: { __typename?: 'UserModel', id: string, email: string, username: string } };
+export type FindCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
+export type FindCurrentUserQuery = { __typename?: 'Query', findUserByCurrentSession: { __typename: 'FindUserError', error: string, error_code: number } | { __typename?: 'FindUserSuccess', user?: { __typename: 'User', id: string, login: string, email: string, displayName: string, isEmailVerified: boolean, isTotpEnabled: boolean } | null } | { __typename?: 'UserBanned' } };
+
+export type FindProfileBySessionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FindProfileBySessionQuery = { __typename?: 'Query', findProfileBySession: { __typename: 'FindProfileError', error: string, error_code: number } | { __typename: 'FindProfileSuccess', profile?: { __typename: 'Profile', userId: string, fullName?: string | null, private?: boolean | null, publicEmail?: string | null, company?: string | null, location?: string | null, birthday?: any | null } | null } };
+
+
+export const SidebarProfileUserDocument = gql`
+    query SidebarProfileUser {
+  findUserByCurrentSession {
+    ... on FindUserSuccess {
+      user {
+        login
+        displayName
+        email
+        __typename
+      }
+    }
+    ... on FindUserError {
+      error
+      error_code
+      __typename
+    }
+  }
+}
+    `;
+
+/**
+ * __useSidebarProfileUserQuery__
+ *
+ * To run a query within a React component, call `useSidebarProfileUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSidebarProfileUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSidebarProfileUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSidebarProfileUserQuery(baseOptions?: Apollo.QueryHookOptions<SidebarProfileUserQuery, SidebarProfileUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SidebarProfileUserQuery, SidebarProfileUserQueryVariables>(SidebarProfileUserDocument, options);
+      }
+export function useSidebarProfileUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SidebarProfileUserQuery, SidebarProfileUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SidebarProfileUserQuery, SidebarProfileUserQueryVariables>(SidebarProfileUserDocument, options);
+        }
+export function useSidebarProfileUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SidebarProfileUserQuery, SidebarProfileUserQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SidebarProfileUserQuery, SidebarProfileUserQueryVariables>(SidebarProfileUserDocument, options);
+        }
+export type SidebarProfileUserQueryHookResult = ReturnType<typeof useSidebarProfileUserQuery>;
+export type SidebarProfileUserLazyQueryHookResult = ReturnType<typeof useSidebarProfileUserLazyQuery>;
+export type SidebarProfileUserSuspenseQueryHookResult = ReturnType<typeof useSidebarProfileUserSuspenseQuery>;
+export type SidebarProfileUserQueryResult = Apollo.QueryResult<SidebarProfileUserQuery, SidebarProfileUserQueryVariables>;
 export const LoginDocument = gql`
-    mutation Login($data: LoginInput!) {
-  loginUser(data: $data) {
-    username
-    email
+    mutation Login($input: LoginInput!) {
+  loginUser(input: $input) {
+    ... on LoginSuccess {
+      __typename
+      user {
+        id
+        email
+        login
+      }
+    }
+    ... on CredentialsError {
+      __typename
+      error
+      error_code
+    }
+    ... on AdditionalAuthError {
+      __typename
+      error
+      error_code
+      obscured_email
+      error_description
+    }
   }
 }
     `;
@@ -315,7 +695,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * @example
  * const [loginMutation, { data, loading, error }] = useLoginMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -326,46 +706,174 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
-export const LogoutUserDocument = gql`
-    query LogoutUser {
-  logoutUser
+export const RegisterUserDocument = gql`
+    mutation RegisterUser($input: RegisterUserInput!) {
+  createUser(input: $input) {
+    ... on RegisterSuccess {
+      __typename
+      user {
+        __typename
+        id
+        email
+        login
+        profile {
+          fullName
+        }
+      }
+    }
+    ... on RegisterError {
+      __typename
+      error
+      error_code
+      error_description
+    }
+  }
+}
+    `;
+export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutation, RegisterUserMutationVariables>;
+
+/**
+ * __useRegisterUserMutation__
+ *
+ * To run a mutation, you first call `useRegisterUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerUserMutation, { data, loading, error }] = useRegisterUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions<RegisterUserMutation, RegisterUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
+      }
+export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
+export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
+export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const SessionCheckDocument = gql`
+    query sessionCheck {
+  sessionCheck
 }
     `;
 
 /**
- * __useLogoutUserQuery__
+ * __useSessionCheckQuery__
  *
- * To run a query within a React component, call `useLogoutUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useLogoutUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSessionCheckQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSessionCheckQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useLogoutUserQuery({
+ * const { data, loading, error } = useSessionCheckQuery({
  *   variables: {
  *   },
  * });
  */
-export function useLogoutUserQuery(baseOptions?: Apollo.QueryHookOptions<LogoutUserQuery, LogoutUserQueryVariables>) {
+export function useSessionCheckQuery(baseOptions?: Apollo.QueryHookOptions<SessionCheckQuery, SessionCheckQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<LogoutUserQuery, LogoutUserQueryVariables>(LogoutUserDocument, options);
+        return Apollo.useQuery<SessionCheckQuery, SessionCheckQueryVariables>(SessionCheckDocument, options);
       }
-export function useLogoutUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<LogoutUserQuery, LogoutUserQueryVariables>) {
+export function useSessionCheckLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SessionCheckQuery, SessionCheckQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<LogoutUserQuery, LogoutUserQueryVariables>(LogoutUserDocument, options);
+          return Apollo.useLazyQuery<SessionCheckQuery, SessionCheckQueryVariables>(SessionCheckDocument, options);
         }
-export function useLogoutUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<LogoutUserQuery, LogoutUserQueryVariables>) {
+export function useSessionCheckSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SessionCheckQuery, SessionCheckQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<LogoutUserQuery, LogoutUserQueryVariables>(LogoutUserDocument, options);
+          return Apollo.useSuspenseQuery<SessionCheckQuery, SessionCheckQueryVariables>(SessionCheckDocument, options);
         }
-export type LogoutUserQueryHookResult = ReturnType<typeof useLogoutUserQuery>;
-export type LogoutUserLazyQueryHookResult = ReturnType<typeof useLogoutUserLazyQuery>;
-export type LogoutUserSuspenseQueryHookResult = ReturnType<typeof useLogoutUserSuspenseQuery>;
-export type LogoutUserQueryResult = Apollo.QueryResult<LogoutUserQuery, LogoutUserQueryVariables>;
+export type SessionCheckQueryHookResult = ReturnType<typeof useSessionCheckQuery>;
+export type SessionCheckLazyQueryHookResult = ReturnType<typeof useSessionCheckLazyQuery>;
+export type SessionCheckSuspenseQueryHookResult = ReturnType<typeof useSessionCheckSuspenseQuery>;
+export type SessionCheckQueryResult = Apollo.QueryResult<SessionCheckQuery, SessionCheckQueryVariables>;
+export const IsUsernameAvailableDocument = gql`
+    query IsUsernameAvailable($input: UsernameAvailableInput!) {
+  isUsernameAvailable(input: $input)
+}
+    `;
+
+/**
+ * __useIsUsernameAvailableQuery__
+ *
+ * To run a query within a React component, call `useIsUsernameAvailableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsUsernameAvailableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsUsernameAvailableQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useIsUsernameAvailableQuery(baseOptions: Apollo.QueryHookOptions<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables> & ({ variables: IsUsernameAvailableQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables>(IsUsernameAvailableDocument, options);
+      }
+export function useIsUsernameAvailableLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables>(IsUsernameAvailableDocument, options);
+        }
+export function useIsUsernameAvailableSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables>(IsUsernameAvailableDocument, options);
+        }
+export type IsUsernameAvailableQueryHookResult = ReturnType<typeof useIsUsernameAvailableQuery>;
+export type IsUsernameAvailableLazyQueryHookResult = ReturnType<typeof useIsUsernameAvailableLazyQuery>;
+export type IsUsernameAvailableSuspenseQueryHookResult = ReturnType<typeof useIsUsernameAvailableSuspenseQuery>;
+export type IsUsernameAvailableQueryResult = Apollo.QueryResult<IsUsernameAvailableQuery, IsUsernameAvailableQueryVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logoutUser
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const DisableTotpDocument = gql`
     mutation DisableTotp {
-  disableTotp
+  disableTotp {
+    ... on DisableTotpSuccess {
+      __typename
+      success
+    }
+    ... on DisableTotpError {
+      __typename
+      error
+      error_code
+    }
+  }
 }
     `;
 export type DisableTotpMutationFn = Apollo.MutationFunction<DisableTotpMutation, DisableTotpMutationVariables>;
@@ -394,8 +902,18 @@ export type DisableTotpMutationHookResult = ReturnType<typeof useDisableTotpMuta
 export type DisableTotpMutationResult = Apollo.MutationResult<DisableTotpMutation>;
 export type DisableTotpMutationOptions = Apollo.BaseMutationOptions<DisableTotpMutation, DisableTotpMutationVariables>;
 export const EnableTotpDocument = gql`
-    mutation EnableTotp($data: EnableTotpInput!) {
-  enableTotp(data: $data)
+    mutation EnableTotp($input: EnableTotpInput!) {
+  enableTotp(input: $input) {
+    ... on EnableTotpSuccess {
+      __typename
+      success
+    }
+    ... on EnableTotpError {
+      __typename
+      error
+      error_code
+    }
+  }
 }
     `;
 export type EnableTotpMutationFn = Apollo.MutationFunction<EnableTotpMutation, EnableTotpMutationVariables>;
@@ -413,7 +931,7 @@ export type EnableTotpMutationFn = Apollo.MutationFunction<EnableTotpMutation, E
  * @example
  * const [enableTotpMutation, { data, loading, error }] = useEnableTotpMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -427,8 +945,16 @@ export type EnableTotpMutationOptions = Apollo.BaseMutationOptions<EnableTotpMut
 export const GenerateTotpSecretDocument = gql`
     query GenerateTotpSecret {
   generateTotpSecret {
-    qrcodeUrl
-    secret
+    ... on GenerateTotpSuccess {
+      __typename
+      qrcodeUrl
+      secret
+    }
+    ... on GenerateTotpError {
+      __typename
+      error
+      error_code
+    }
   }
 }
     `;
@@ -464,9 +990,62 @@ export type GenerateTotpSecretQueryHookResult = ReturnType<typeof useGenerateTot
 export type GenerateTotpSecretLazyQueryHookResult = ReturnType<typeof useGenerateTotpSecretLazyQuery>;
 export type GenerateTotpSecretSuspenseQueryHookResult = ReturnType<typeof useGenerateTotpSecretSuspenseQuery>;
 export type GenerateTotpSecretQueryResult = Apollo.QueryResult<GenerateTotpSecretQuery, GenerateTotpSecretQueryVariables>;
+export const EmailVerifyDocument = gql`
+    mutation EmailVerify($input: VerificationInput!) {
+  emailVerify(input: $input) {
+    __typename
+    ... on EmailVerifySuccess {
+      __typename
+      status
+    }
+    ... on EmailVerifyError {
+      __typename
+      error
+      error_code
+    }
+  }
+}
+    `;
+export type EmailVerifyMutationFn = Apollo.MutationFunction<EmailVerifyMutation, EmailVerifyMutationVariables>;
+
+/**
+ * __useEmailVerifyMutation__
+ *
+ * To run a mutation, you first call `useEmailVerifyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEmailVerifyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [emailVerifyMutation, { data, loading, error }] = useEmailVerifyMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useEmailVerifyMutation(baseOptions?: Apollo.MutationHookOptions<EmailVerifyMutation, EmailVerifyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EmailVerifyMutation, EmailVerifyMutationVariables>(EmailVerifyDocument, options);
+      }
+export type EmailVerifyMutationHookResult = ReturnType<typeof useEmailVerifyMutation>;
+export type EmailVerifyMutationResult = Apollo.MutationResult<EmailVerifyMutation>;
+export type EmailVerifyMutationOptions = Apollo.BaseMutationOptions<EmailVerifyMutation, EmailVerifyMutationVariables>;
 export const NewPasswordDocument = gql`
-    mutation NewPassword($data: NewPasswordInput!) {
-  newPassword(data: $data)
+    mutation NewPassword($input: NewPasswordInput!) {
+  newPassword(input: $input) {
+    ... on NewPasswordSuccess {
+      __typename
+      success
+    }
+    ... on NewPasswordError {
+      __typename
+      error
+      error_code
+      error_description
+    }
+  }
 }
     `;
 export type NewPasswordMutationFn = Apollo.MutationFunction<NewPasswordMutation, NewPasswordMutationVariables>;
@@ -484,7 +1063,7 @@ export type NewPasswordMutationFn = Apollo.MutationFunction<NewPasswordMutation,
  * @example
  * const [newPasswordMutation, { data, loading, error }] = useNewPasswordMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -496,8 +1075,17 @@ export type NewPasswordMutationHookResult = ReturnType<typeof useNewPasswordMuta
 export type NewPasswordMutationResult = Apollo.MutationResult<NewPasswordMutation>;
 export type NewPasswordMutationOptions = Apollo.BaseMutationOptions<NewPasswordMutation, NewPasswordMutationVariables>;
 export const ResetPasswordDocument = gql`
-    mutation ResetPassword($data: ResetPasswordInput!) {
-  resetPassword(data: $data)
+    mutation ResetPassword($input: ResetPasswordInput!) {
+  resetPassword(input: $input) {
+    ... on ResetPasswordSuccess {
+      success
+    }
+    ... on ResetPasswordError {
+      error
+      error_code
+      error_description
+    }
+  }
 }
     `;
 export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutation, ResetPasswordMutationVariables>;
@@ -515,7 +1103,7 @@ export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutat
  * @example
  * const [resetPasswordMutation, { data, loading, error }] = useResetPasswordMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -526,157 +1114,338 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
-export const FindCurrentUserSessionDocument = gql`
-    query FindCurrentUserSession {
-  findCurrentUserSession {
-    sessionId
-    createdAt
-    metadata {
-      location {
-        country_code
-        country
-        city
-        timezone
-        latitude
-        longitude
+export const UpdateProfileInfoDocument = gql`
+    mutation UpdateProfileInfo($input: UpdateProfileInput!) {
+  updateProfile(input: $input) {
+    __typename
+    ... on UpdateProfileSuccess {
+      profile {
+        __typename
+        fullName
+        private
+        company
+        location
+        birthday
       }
-      device {
-        browser
-        os
-        type
-      }
-      ip
+    }
+    ... on UpdateProfileError {
+      __typename
+      error
+      error_code
     }
   }
 }
     `;
+export type UpdateProfileInfoMutationFn = Apollo.MutationFunction<UpdateProfileInfoMutation, UpdateProfileInfoMutationVariables>;
 
 /**
- * __useFindCurrentUserSessionQuery__
+ * __useUpdateProfileInfoMutation__
  *
- * To run a query within a React component, call `useFindCurrentUserSessionQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindCurrentUserSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFindCurrentUserSessionQuery({
- *   variables: {
- *   },
- * });
- */
-export function useFindCurrentUserSessionQuery(baseOptions?: Apollo.QueryHookOptions<FindCurrentUserSessionQuery, FindCurrentUserSessionQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FindCurrentUserSessionQuery, FindCurrentUserSessionQueryVariables>(FindCurrentUserSessionDocument, options);
-      }
-export function useFindCurrentUserSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindCurrentUserSessionQuery, FindCurrentUserSessionQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FindCurrentUserSessionQuery, FindCurrentUserSessionQueryVariables>(FindCurrentUserSessionDocument, options);
-        }
-export function useFindCurrentUserSessionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindCurrentUserSessionQuery, FindCurrentUserSessionQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<FindCurrentUserSessionQuery, FindCurrentUserSessionQueryVariables>(FindCurrentUserSessionDocument, options);
-        }
-export type FindCurrentUserSessionQueryHookResult = ReturnType<typeof useFindCurrentUserSessionQuery>;
-export type FindCurrentUserSessionLazyQueryHookResult = ReturnType<typeof useFindCurrentUserSessionLazyQuery>;
-export type FindCurrentUserSessionSuspenseQueryHookResult = ReturnType<typeof useFindCurrentUserSessionSuspenseQuery>;
-export type FindCurrentUserSessionQueryResult = Apollo.QueryResult<FindCurrentUserSessionQuery, FindCurrentUserSessionQueryVariables>;
-export const FindSessionByUserDocument = gql`
-    query FindSessionByUser {
-  findSessionByUser {
-    sessionId
-    createdAt
-    metadata {
-      location {
-        country_code
-        country
-        city
-        timezone
-        latitude
-        longitude
-      }
-      device {
-        browser
-        os
-        type
-      }
-      ip
-    }
-  }
-}
-    `;
-
-/**
- * __useFindSessionByUserQuery__
- *
- * To run a query within a React component, call `useFindSessionByUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindSessionByUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useFindSessionByUserQuery({
- *   variables: {
- *   },
- * });
- */
-export function useFindSessionByUserQuery(baseOptions?: Apollo.QueryHookOptions<FindSessionByUserQuery, FindSessionByUserQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FindSessionByUserQuery, FindSessionByUserQueryVariables>(FindSessionByUserDocument, options);
-      }
-export function useFindSessionByUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindSessionByUserQuery, FindSessionByUserQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FindSessionByUserQuery, FindSessionByUserQueryVariables>(FindSessionByUserDocument, options);
-        }
-export function useFindSessionByUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindSessionByUserQuery, FindSessionByUserQueryVariables>) {
-          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<FindSessionByUserQuery, FindSessionByUserQueryVariables>(FindSessionByUserDocument, options);
-        }
-export type FindSessionByUserQueryHookResult = ReturnType<typeof useFindSessionByUserQuery>;
-export type FindSessionByUserLazyQueryHookResult = ReturnType<typeof useFindSessionByUserLazyQuery>;
-export type FindSessionByUserSuspenseQueryHookResult = ReturnType<typeof useFindSessionByUserSuspenseQuery>;
-export type FindSessionByUserQueryResult = Apollo.QueryResult<FindSessionByUserQuery, FindSessionByUserQueryVariables>;
-export const CreateUserDocument = gql`
-    mutation CreateUser($data: CreateUserInput!) {
-  createUser(data: $data) {
-    username
-    email
-  }
-}
-    `;
-export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
-
-/**
- * __useCreateUserMutation__
- *
- * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateProfileInfoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProfileInfoMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ * const [updateProfileInfoMutation, { data, loading, error }] = useUpdateProfileInfoMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
+export function useUpdateProfileInfoMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProfileInfoMutation, UpdateProfileInfoMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
+        return Apollo.useMutation<UpdateProfileInfoMutation, UpdateProfileInfoMutationVariables>(UpdateProfileInfoDocument, options);
       }
-export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
-export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
-export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export type UpdateProfileInfoMutationHookResult = ReturnType<typeof useUpdateProfileInfoMutation>;
+export type UpdateProfileInfoMutationResult = Apollo.MutationResult<UpdateProfileInfoMutation>;
+export type UpdateProfileInfoMutationOptions = Apollo.BaseMutationOptions<UpdateProfileInfoMutation, UpdateProfileInfoMutationVariables>;
+export const RemoveSessionDocument = gql`
+    mutation RemoveSession($id: String!) {
+  removeSession(id: $id) {
+    ... on RemoveSessionSuccess {
+      __typename
+      status
+      session
+    }
+    ... on RemoveSessionError {
+      __typename
+      error
+      error_code
+      sessionId
+    }
+  }
+}
+    `;
+export type RemoveSessionMutationFn = Apollo.MutationFunction<RemoveSessionMutation, RemoveSessionMutationVariables>;
+
+/**
+ * __useRemoveSessionMutation__
+ *
+ * To run a mutation, you first call `useRemoveSessionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveSessionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeSessionMutation, { data, loading, error }] = useRemoveSessionMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveSessionMutation(baseOptions?: Apollo.MutationHookOptions<RemoveSessionMutation, RemoveSessionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveSessionMutation, RemoveSessionMutationVariables>(RemoveSessionDocument, options);
+      }
+export type RemoveSessionMutationHookResult = ReturnType<typeof useRemoveSessionMutation>;
+export type RemoveSessionMutationResult = Apollo.MutationResult<RemoveSessionMutation>;
+export type RemoveSessionMutationOptions = Apollo.BaseMutationOptions<RemoveSessionMutation, RemoveSessionMutationVariables>;
+export const FindCurrentSessionDocument = gql`
+    query FindCurrentSession {
+  findCurrentSession {
+    __typename
+    ... on FindSessionSuccess {
+      session {
+        __typename
+        sessionId
+        userId
+        createdAt
+        metadata {
+          __typename
+          ip
+          location {
+            __typename
+            city
+            country
+            country_code
+            timezone
+            latitude
+            longitude
+          }
+          device {
+            __typename
+            type
+            browser
+          }
+        }
+      }
+    }
+    ... on FindSessionError {
+      __typename
+      error
+      error_code
+    }
+    ... on BaseError {
+      error
+      error_code
+      __typename
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindCurrentSessionQuery__
+ *
+ * To run a query within a React component, call `useFindCurrentSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindCurrentSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindCurrentSessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFindCurrentSessionQuery(baseOptions?: Apollo.QueryHookOptions<FindCurrentSessionQuery, FindCurrentSessionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindCurrentSessionQuery, FindCurrentSessionQueryVariables>(FindCurrentSessionDocument, options);
+      }
+export function useFindCurrentSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindCurrentSessionQuery, FindCurrentSessionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindCurrentSessionQuery, FindCurrentSessionQueryVariables>(FindCurrentSessionDocument, options);
+        }
+export function useFindCurrentSessionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindCurrentSessionQuery, FindCurrentSessionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FindCurrentSessionQuery, FindCurrentSessionQueryVariables>(FindCurrentSessionDocument, options);
+        }
+export type FindCurrentSessionQueryHookResult = ReturnType<typeof useFindCurrentSessionQuery>;
+export type FindCurrentSessionLazyQueryHookResult = ReturnType<typeof useFindCurrentSessionLazyQuery>;
+export type FindCurrentSessionSuspenseQueryHookResult = ReturnType<typeof useFindCurrentSessionSuspenseQuery>;
+export type FindCurrentSessionQueryResult = Apollo.QueryResult<FindCurrentSessionQuery, FindCurrentSessionQueryVariables>;
+export const FindSessionsByCurrentUserDocument = gql`
+    query FindSessionsByCurrentUser {
+  findSessionsByCurrentUser {
+    __typename
+    ... on FindSessionsSuccess {
+      sessions {
+        __typename
+        sessionId
+        userId
+        createdAt
+        metadata {
+          __typename
+          ip
+          location {
+            __typename
+            city
+            country
+            country_code
+            timezone
+            latitude
+            longitude
+          }
+          device {
+            __typename
+            type
+            browser
+          }
+        }
+      }
+      limit
+      current_value
+    }
+    ... on FindSessionError {
+      __typename
+      error
+      error_code
+    }
+    ... on BaseError {
+      error
+      error_code
+      __typename
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindSessionsByCurrentUserQuery__
+ *
+ * To run a query within a React component, call `useFindSessionsByCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindSessionsByCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindSessionsByCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFindSessionsByCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<FindSessionsByCurrentUserQuery, FindSessionsByCurrentUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindSessionsByCurrentUserQuery, FindSessionsByCurrentUserQueryVariables>(FindSessionsByCurrentUserDocument, options);
+      }
+export function useFindSessionsByCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindSessionsByCurrentUserQuery, FindSessionsByCurrentUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindSessionsByCurrentUserQuery, FindSessionsByCurrentUserQueryVariables>(FindSessionsByCurrentUserDocument, options);
+        }
+export function useFindSessionsByCurrentUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindSessionsByCurrentUserQuery, FindSessionsByCurrentUserQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FindSessionsByCurrentUserQuery, FindSessionsByCurrentUserQueryVariables>(FindSessionsByCurrentUserDocument, options);
+        }
+export type FindSessionsByCurrentUserQueryHookResult = ReturnType<typeof useFindSessionsByCurrentUserQuery>;
+export type FindSessionsByCurrentUserLazyQueryHookResult = ReturnType<typeof useFindSessionsByCurrentUserLazyQuery>;
+export type FindSessionsByCurrentUserSuspenseQueryHookResult = ReturnType<typeof useFindSessionsByCurrentUserSuspenseQuery>;
+export type FindSessionsByCurrentUserQueryResult = Apollo.QueryResult<FindSessionsByCurrentUserQuery, FindSessionsByCurrentUserQueryVariables>;
+export const FindSessionsByUserIdDocument = gql`
+    query FindSessionsByUserId($userId: String!) {
+  findSessionsByUserId(userId: $userId) {
+    ... on FindSessionsSuccess {
+      __typename
+      sessions {
+        __typename
+        sessionId
+        userId
+        createdAt
+        metadata {
+          ip
+          location {
+            city
+            country
+            country_code
+            timezone
+            latitude
+            longitude
+          }
+          device {
+            type
+            browser
+          }
+        }
+      }
+      limit
+      current_value
+    }
+    ... on FindSessionError {
+      __typename
+      error
+      error_code
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindSessionsByUserIdQuery__
+ *
+ * To run a query within a React component, call `useFindSessionsByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindSessionsByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindSessionsByUserIdQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useFindSessionsByUserIdQuery(baseOptions: Apollo.QueryHookOptions<FindSessionsByUserIdQuery, FindSessionsByUserIdQueryVariables> & ({ variables: FindSessionsByUserIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindSessionsByUserIdQuery, FindSessionsByUserIdQueryVariables>(FindSessionsByUserIdDocument, options);
+      }
+export function useFindSessionsByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindSessionsByUserIdQuery, FindSessionsByUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindSessionsByUserIdQuery, FindSessionsByUserIdQueryVariables>(FindSessionsByUserIdDocument, options);
+        }
+export function useFindSessionsByUserIdSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindSessionsByUserIdQuery, FindSessionsByUserIdQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FindSessionsByUserIdQuery, FindSessionsByUserIdQueryVariables>(FindSessionsByUserIdDocument, options);
+        }
+export type FindSessionsByUserIdQueryHookResult = ReturnType<typeof useFindSessionsByUserIdQuery>;
+export type FindSessionsByUserIdLazyQueryHookResult = ReturnType<typeof useFindSessionsByUserIdLazyQuery>;
+export type FindSessionsByUserIdSuspenseQueryHookResult = ReturnType<typeof useFindSessionsByUserIdSuspenseQuery>;
+export type FindSessionsByUserIdQueryResult = Apollo.QueryResult<FindSessionsByUserIdQuery, FindSessionsByUserIdQueryVariables>;
 export const UdateUserInfoDocument = gql`
-    mutation UdateUserInfo($data: UpdateUserInfoInput!) {
-  updateUserInfo(input: $data) {
-    username
-    id
+    mutation UdateUserInfo($input: UpdateUserInfoInput!) {
+  updateUserInfo(input: $input) {
+    ... on UpdateUserSuccess {
+      user {
+        id
+        login
+        email
+        displayName
+        isEmailVerified
+        isTotpEnabled
+        __typename
+      }
+    }
+    ... on UpdateUserError {
+      error
+      error_code
+      __typename
+    }
   }
 }
     `;
@@ -695,7 +1464,7 @@ export type UdateUserInfoMutationFn = Apollo.MutationFunction<UdateUserInfoMutat
  * @example
  * const [udateUserInfoMutation, { data, loading, error }] = useUdateUserInfoMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -706,44 +1475,113 @@ export function useUdateUserInfoMutation(baseOptions?: Apollo.MutationHookOption
 export type UdateUserInfoMutationHookResult = ReturnType<typeof useUdateUserInfoMutation>;
 export type UdateUserInfoMutationResult = Apollo.MutationResult<UdateUserInfoMutation>;
 export type UdateUserInfoMutationOptions = Apollo.BaseMutationOptions<UdateUserInfoMutation, UdateUserInfoMutationVariables>;
-export const FindUserDocument = gql`
-    query FindUser {
-  findUser {
-    id
-    email
-    username
+export const FindCurrentUserDocument = gql`
+    query FindCurrentUser {
+  findUserByCurrentSession {
+    ... on FindUserSuccess {
+      user {
+        id
+        login
+        email
+        displayName
+        isEmailVerified
+        isTotpEnabled
+        __typename
+      }
+    }
+    ... on FindUserError {
+      error
+      error_code
+      __typename
+    }
   }
 }
     `;
 
 /**
- * __useFindUserQuery__
+ * __useFindCurrentUserQuery__
  *
- * To run a query within a React component, call `useFindUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFindCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFindUserQuery({
+ * const { data, loading, error } = useFindCurrentUserQuery({
  *   variables: {
  *   },
  * });
  */
-export function useFindUserQuery(baseOptions?: Apollo.QueryHookOptions<FindUserQuery, FindUserQueryVariables>) {
+export function useFindCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<FindCurrentUserQuery, FindCurrentUserQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FindUserQuery, FindUserQueryVariables>(FindUserDocument, options);
+        return Apollo.useQuery<FindCurrentUserQuery, FindCurrentUserQueryVariables>(FindCurrentUserDocument, options);
       }
-export function useFindUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserQuery, FindUserQueryVariables>) {
+export function useFindCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindCurrentUserQuery, FindCurrentUserQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FindUserQuery, FindUserQueryVariables>(FindUserDocument, options);
+          return Apollo.useLazyQuery<FindCurrentUserQuery, FindCurrentUserQueryVariables>(FindCurrentUserDocument, options);
         }
-export function useFindUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindUserQuery, FindUserQueryVariables>) {
+export function useFindCurrentUserSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindCurrentUserQuery, FindCurrentUserQueryVariables>) {
           const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<FindUserQuery, FindUserQueryVariables>(FindUserDocument, options);
+          return Apollo.useSuspenseQuery<FindCurrentUserQuery, FindCurrentUserQueryVariables>(FindCurrentUserDocument, options);
         }
-export type FindUserQueryHookResult = ReturnType<typeof useFindUserQuery>;
-export type FindUserLazyQueryHookResult = ReturnType<typeof useFindUserLazyQuery>;
-export type FindUserSuspenseQueryHookResult = ReturnType<typeof useFindUserSuspenseQuery>;
-export type FindUserQueryResult = Apollo.QueryResult<FindUserQuery, FindUserQueryVariables>;
+export type FindCurrentUserQueryHookResult = ReturnType<typeof useFindCurrentUserQuery>;
+export type FindCurrentUserLazyQueryHookResult = ReturnType<typeof useFindCurrentUserLazyQuery>;
+export type FindCurrentUserSuspenseQueryHookResult = ReturnType<typeof useFindCurrentUserSuspenseQuery>;
+export type FindCurrentUserQueryResult = Apollo.QueryResult<FindCurrentUserQuery, FindCurrentUserQueryVariables>;
+export const FindProfileBySessionDocument = gql`
+    query FindProfileBySession {
+  findProfileBySession {
+    __typename
+    ... on FindProfileSuccess {
+      profile {
+        __typename
+        userId
+        fullName
+        private
+        publicEmail
+        company
+        location
+        birthday
+      }
+    }
+    ... on FindProfileError {
+      __typename
+      error
+      error_code
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindProfileBySessionQuery__
+ *
+ * To run a query within a React component, call `useFindProfileBySessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindProfileBySessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindProfileBySessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useFindProfileBySessionQuery(baseOptions?: Apollo.QueryHookOptions<FindProfileBySessionQuery, FindProfileBySessionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindProfileBySessionQuery, FindProfileBySessionQueryVariables>(FindProfileBySessionDocument, options);
+      }
+export function useFindProfileBySessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindProfileBySessionQuery, FindProfileBySessionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindProfileBySessionQuery, FindProfileBySessionQueryVariables>(FindProfileBySessionDocument, options);
+        }
+export function useFindProfileBySessionSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<FindProfileBySessionQuery, FindProfileBySessionQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FindProfileBySessionQuery, FindProfileBySessionQueryVariables>(FindProfileBySessionDocument, options);
+        }
+export type FindProfileBySessionQueryHookResult = ReturnType<typeof useFindProfileBySessionQuery>;
+export type FindProfileBySessionLazyQueryHookResult = ReturnType<typeof useFindProfileBySessionLazyQuery>;
+export type FindProfileBySessionSuspenseQueryHookResult = ReturnType<typeof useFindProfileBySessionSuspenseQuery>;
+export type FindProfileBySessionQueryResult = Apollo.QueryResult<FindProfileBySessionQuery, FindProfileBySessionQueryVariables>;

@@ -1,6 +1,24 @@
-mutation Login($data: LoginInput!) {
-  loginUser(data: $data) {
-    username
-    email
+mutation Login($input: LoginInput!) {
+  loginUser(input: $input) {
+    ... on LoginSuccess {
+      __typename
+      user {
+        id
+        email
+        login
+      }
+    }
+    ... on CredentialsError {
+      __typename
+      error
+      error_code
+    }
+    ... on AdditionalAuthError {
+      __typename
+      error
+      error_code
+      obscured_email
+      error_description
+    }
   }
 }

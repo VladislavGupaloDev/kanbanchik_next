@@ -1,6 +1,6 @@
-import {EyeClosedIcon, EyeIcon} from 'lucide-react';
-import {ComponentProps} from 'react';
-import {cn} from '@/shared/lib/utils';
+import { cn } from '@/shared/lib/utils/utils'
+import { EyeClosedIcon, EyeIcon } from 'lucide-react'
+import { ComponentProps } from 'react'
 
 interface PasswordShowButtonProps extends ComponentProps<'button'> {
   isShow: boolean
